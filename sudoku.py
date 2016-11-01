@@ -32,18 +32,28 @@ def generate():
       for j in range(SIZE**2):
         number = board[i, j]
         square, row, col = getSquareRowCol(board, i, j)
-        # check square
-        if isDuplicate(square, number):
-          # get what's missing
-          missing = getMissing(square)
-          # and switch
-          board[i] = switch(row, j, missing)
-        elif isDuplicate(col, number):
-          # get what's missing
-          missing = getMissing(col)
-          # and switch
-          board[i] = switch(row, j, missing)
-        # and continue...
+        # is square perfect?
+        if isPerfect(square):
+          # check for imperfect column
+          if not isPerfect(col):
+            # is this the number that repeats in the column?
+            if isDuplicate(col, number):
+              # get missing numbers for the column
+              missing = getMissing(col)
+              # get first number in the missing list that's in the same row in this box, if exists
+              missing = inRowNotInCol(square, missing)
+              # switch missing number and current box
+              if missing != None:
+                board[i] = switch(row, j, missing)
+        # square is not perfect
+        else:
+          # is this the number that repeats in the square?
+          if isDuplicate(square, number):
+            # get number(s) square is missing, and pick one at random
+            missing = getMissing(square)[0]
+            # switch missing number and current box
+            board[i] = switch(row, j, missing)
+
     iterations += 1
   print "Went through " + str(iterations) + " iterations"
   if not perfectBoard(board):
@@ -77,6 +87,19 @@ def perfectBoard(board):
   return True
 
 """
+Check if a SIZE by SIZE square or column is perfect (no numbers repeat)
+We can easily do this by creating a unique array, and checking if the length is equal to SIZE**2
+
+Arguments:
+  arr: a numpy array, could either be SIZE x SIZE of SIZE**2 x 1
+Returns:
+  boolean: True if no numbers repeat
+"""
+def isPerfect(arr):
+  arr = arr.reshape(SIZE**2,)
+  return len(np.unique(arr)) == SIZE**2
+
+"""
 Check if a number is a duplicate in a numpy array
 
 Arguments:
@@ -89,25 +112,24 @@ def isDuplicate(lst, number):
   return (lst == number).sum() > 1
 
 """
-Get the first missing number in a numpy array
+Get the missing numbers in a numpy array
 lst, in theory, should be a list of consective numbers 1 through N**2 inclusive
 if lst == [4,4,1,2]:
-  getMissing(lst) == 3
+  getMissing(lst) == [3]
+if lst == [1,1,3,1]:
+  getMissing(lst) == [2, 4]
 
 Arguments:
   lst: a numpy array of size SIZE**2
 Returns:
-  integer: the first missing number in lst
+  items: the a list of missing items in the list
 """
 def getMissing(lst):
-  found = False
-  item = 1
-  while not found:
-    if not item in lst:
-      found = True
-    else:
-      item += 1
-  return item
+  items = []
+  for i in range(1,10):
+    if i not in lst:
+      items.append(i)
+  return items
 
 """
 For a row, switch the item that's at the current index with whichever index the missing number is
@@ -127,14 +149,11 @@ Returns:
 def switch(row, currIndex, missingNumber):
   missingIndex = np.where(row == missingNumber)
   missingIndex = missingIndex[0][0]
-  # if the missing index in this row is in the same box as the current index
-  # do nothing
-  if missingIndex / SIZE * SIZE == currIndex / SIZE * SIZE:
-    return row
-  else:
-    row[missingIndex] = row[currIndex]
-    row[currIndex] = missingNumber
-    return row
+  # if missingIndex / SIZE * SIZE == currIndex / SIZE * SIZE:
+  #   return row
+  row[missingIndex] = row[currIndex]
+  row[currIndex] = missingNumber
+  return row
 
 """
 For a particular box on the board, board[row, col], get the square,
@@ -156,12 +175,30 @@ def getSquareRowCol(board, row, col):
   return board[i:i+SIZE, j:j+SIZE], board[row], board[:, col]
 
 """
+Get the first number in a list that's missing in another list
+l1 = [1,3,2,1]
+l2 = [1,4]
+getMissingInCol(l1, l2) == 4
+Arguments:
+  col: numpy array with SIZE**2 entries
+  missing: list with up to SIZE**2 entries
+Returns:
+  None if no items in missing are in col,
+  else, the first item that's missing
+"""
+def inRowNotInCol(square, missing):
+  for item in missing:
+    if item in square:
+      return item
+
+"""
 User can input board size: 16 boxes, or 81 boxes
 """
 if __name__ == "__main__":
   # SIZE = 2
   MAXITERATIONS = 100
-  userInput = raw_input("Choose a size: 2 or 3\n")
-  SIZE = int(userInput)
+  # userInput = raw_input("Choose a size: 2 or 3\n")
+  # SIZE = int(userInput)
+  SIZE = 3
   board = generate()
   print board
