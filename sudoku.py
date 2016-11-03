@@ -1,4 +1,5 @@
 import numpy as np
+import sys
 
 """
 Generate a Sudoku board!
@@ -12,7 +13,7 @@ TODO: look into refining the generate function.
 Returns:
   SIZE**2 x SIZE**2 numpy array
 """
-def generate():
+def generate(step=False):
   # select random initial state (initial guess at solution)
   board = np.zeros(SIZE**4).reshape(SIZE**2, SIZE**2)
 
@@ -27,37 +28,51 @@ def generate():
   # and continue until you reach perfect solution or run out of time
   iterations = 0
   while not perfectBoard(board) and iterations < MAXITERATIONS:
-    # first check the missing and dups in square
-    for i in range(SIZE**2):
-      for j in range(SIZE**2):
-        number = board[i, j]
-        square, row, col = getSquareRowCol(board, i, j)
-        # is square perfect?
-        if isPerfect(square):
-          # check for imperfect column
-          if not isPerfect(col):
-            # is this the number that repeats in the column?
-            if isDuplicate(col, number):
-              # get missing numbers for the column
-              missing = getMissing(col)
-              # get first number in the missing list that's in the same row in this box, if exists
-              missing = inRowNotInCol(square, missing)
-              # switch missing number and current box
-              if missing != None:
-                board[i] = switch(row, j, missing)
-        # square is not perfect
-        else:
-          # is this the number that repeats in the square?
-          if isDuplicate(square, number):
-            # get number(s) square is missing, and pick one at random
-            missing = getMissing(square)[0]
-            # switch missing number and current box
-            board[i] = switch(row, j, missing)
+    if step:
+      print "At iteration " + str(iterations)
+      print board
+      user_input = raw_input("Continue? (Y or N) >> ")
+      if user_input != 'y':
+        return board
 
+    board = localSearch(board)
     iterations += 1
+
   print "Went through " + str(iterations) + " iterations"
   if not perfectBoard(board):
     print "Not a valid sudoku puzzle"
+  return board
+
+"""
+Helper function for generate board
+"""
+def localSearch(board):
+  # first check the missing and dups in square
+  for i in range(SIZE**2):
+    for j in range(SIZE**2):
+      number = board[i, j]
+      square, row, col = getSquareRowCol(board, i, j)
+      # is square perfect?
+      if isPerfect(square):
+        # check for imperfect column
+        if not isPerfect(col):
+          # is this the number that repeats in the column?
+          if isDuplicate(col, number):
+            # get missing numbers for the column
+            missing = getMissing(col)
+            # get first number in the missing list that's in the same row in this box, if exists
+            missing = inRowNotInCol(square[i % SIZE], missing)
+            # switch missing number and current box
+            if missing != None:
+              board[i] = switch(row, j, missing)
+      # square is not perfect
+      else:
+        # is this the number that repeats in the square?
+        if isDuplicate(square, number):
+          # get number(s) square is missing, and pick one at random
+          missing = getMissing(square)[0]
+          # switch missing number and current box
+          board[i] = switch(row, j, missing)
   return board
 
 """
@@ -126,7 +141,7 @@ Returns:
 """
 def getMissing(lst):
   items = []
-  for i in range(1,10):
+  for i in range(1,SIZE**2 + 1):
     if i not in lst:
       items.append(i)
   return items
@@ -195,10 +210,25 @@ def inRowNotInCol(square, missing):
 User can input board size: 16 boxes, or 81 boxes
 """
 if __name__ == "__main__":
-  # SIZE = 2
+  if len(sys.argv) == 2 and sys.argv[1] > 1:
+    SIZE = sys.argv[1]
+  else:
+    SIZE = 2
+
+  try:
+    assert sys.argv[1] > 1
+    SIZE = int(sys.argv[1])
+  except Exception as e:
+    SIZE = 2
+
   MAXITERATIONS = 100
-  # userInput = raw_input("Choose a size: 2 or 3\n")
-  # SIZE = int(userInput)
-  SIZE = 3
   board = generate()
   print board
+
+  # # test how many perfect boards we get...
+  # perfect = 0.
+  # for i in range(MAXITERATIONS):
+  #   b = generate()
+  #   if perfectBoard(b):
+  #     perfect += 1
+  # print perfect / MAXITERATIONS
