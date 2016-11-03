@@ -1,8 +1,11 @@
 import numpy as np
 import sys
 
+SIZE = 3
+MAXITERATIONS = 100
+
 """
-Generate a Sudoku board!
+Generate a solved Sudoku board!
 Using local search, the algorithm first generates a start state, and then
 continues until a perfect board is achieved, or until it times out (meaning,
 we've succeeded our MAXITERATIONS).
@@ -35,18 +38,20 @@ def generate(step=False):
       if user_input != 'y':
         return board
 
-    board = localSearch(board)
+    board = localSearch(board, iterations)
     iterations += 1
 
-  print "Went through " + str(iterations) + " iterations"
+  if step:
+    print "Went through " + str(iterations) + " iterations"
   if not perfectBoard(board):
-    print "Not a valid sudoku puzzle"
+    if step:
+      print "Not a valid sudoku puzzle"
   return board
 
 """
 Helper function for generate board
 """
-def localSearch(board):
+def localSearch(board, iterations):
   # first check the missing and dups in square
   for i in range(SIZE**2):
     for j in range(SIZE**2):
@@ -64,6 +69,11 @@ def localSearch(board):
             missing = inRowNotInCol(square[i % SIZE], missing)
             # switch missing number and current box
             if missing != None:
+              board[i] = switch(row, j, missing)
+          # generate some probability that we switch anyways
+          else:
+            if np.random.rand() < (MAXITERATIONS - iterations + 0.) / MAXITERATIONS:
+              missing = getMissing(col)[0]
               board[i] = switch(row, j, missing)
       # square is not perfect
       else:
@@ -207,6 +217,17 @@ def inRowNotInCol(square, missing):
       return item
 
 """
+Test how many perfect boards we get
+"""
+def test():
+  perfect = 0.
+  for i in range(MAXITERATIONS):
+    b = generate()
+    if perfectBoard(b):
+      perfect += 1
+  print perfect / MAXITERATIONS
+
+"""
 User can input board size: 16 boxes, or 81 boxes
 """
 if __name__ == "__main__":
@@ -226,9 +247,4 @@ if __name__ == "__main__":
   print board
 
   # # test how many perfect boards we get...
-  # perfect = 0.
-  # for i in range(MAXITERATIONS):
-  #   b = generate()
-  #   if perfectBoard(b):
-  #     perfect += 1
-  # print perfect / MAXITERATIONS
+  # test()
