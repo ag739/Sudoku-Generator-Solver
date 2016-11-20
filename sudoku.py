@@ -1,5 +1,12 @@
-import Tkinter
-from unique_board import Board, getAllX
+# GUI only works for 9x9 boards
+
+# account for Python 2 and Python 3
+try:
+  import Tkinter
+except Exception as e:
+  import tkinter as Tkinter
+
+from unique_board import Board
 
 
 MARGIN = 20
@@ -120,6 +127,17 @@ class SudokuUI(Tkinter.Frame):
         elif self.solved[self.row, self.col] != int(event.char):
           print "Wrong number!"
         self.canvas.delete("selected")
+
+def getAllX(grid, x):
+  """
+  Returns list of indices of occurrences of 'x' in grid
+  """
+  lst = []
+  for i in range(9):
+    for j in range(9):
+      if grid[i, j] == x:
+        lst.append((i, j))
+  return lst
 
 if __name__ == "__main__":
   board = Board(3, 100)

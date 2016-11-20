@@ -7,31 +7,31 @@ class Board(object):
     self.maxiterations = maxiterations
     self.board = self.getPerfectBoard()
 
-  """
-  Generate generates a solved Sudoku board (unless it runs out of time)
-  getPerfectBoard will keep trying generate until a perfect board is generated
-  Returns:
-    board: SIZE**2 x SIZE**2 numpy array that is a perfect Sudoku board
-  """
   def getPerfectBoard(self):
+    """
+    Generate generates a solved Sudoku board (unless it runs out of time)
+    getPerfectBoard will keep trying generate until a perfect board is generated
+    Returns:
+      board: SIZE**2 x SIZE**2 numpy array that is a perfect Sudoku board
+    """
     while True:
       b = self.generate()
       if self.perfectBoard(b):
         return b
 
-  """
-  Generate a solved Sudoku board!
-  Using local search, the algorithm first generates a start state, and then
-  continues until a perfect board is achieved, or until it times out (meaning,
-  we've succeeded our self.maxiterations).
-  More often than not, an invalid Sudoku board is printed out.
-  For now, this is okay as a starting point.
-  TODO: look into refining the generate function.
-
-  Returns:
-    self.size**2 x self.size**2 numpy array
-  """
   def generate(self, step=False):
+    """
+    Generate a solved Sudoku board!
+    Using local search, the algorithm first generates a start state, and then
+    continues until a perfect board is achieved, or until it times out (meaning,
+    we've succeeded our self.maxiterations).
+    More often than not, an invalid Sudoku board is printed out.
+    For now, this is okay as a starting point.
+    TODO: look into refining the generate function.
+
+    Returns:
+      self.size**2 x self.size**2 numpy array
+    """
     # select random initial state (initial guess at solution)
     board = np.zeros(self.size**4).reshape(self.size**2, self.size**2)
 
@@ -63,10 +63,10 @@ class Board(object):
         print "Not a valid sudoku puzzle"
     return board
 
-  """
-  Helper function for generate board
-  """
   def localSearch(self, board, iterations):
+    """
+    Helper function for generate board
+    """
     # first check the missing and dups in square
     for i in range(self.size**2):
       for j in range(self.size**2):
@@ -100,22 +100,22 @@ class Board(object):
             board[i] = self.switch(row, j, missing)
     return board
 
-  """
-  Check if the board generated is a perfect Sudoku board!
-  A perfect Sudoku board is one that:
-    for each of the squares (maximum number of non-overlapping self.size x self.size grids on board)
-    AND
-    for each row of self.size**2 numbers
-    AND
-    for each column of self.size**2 numbers,
-    each number from 1 to self.size**2, inclusive, only occurs once
-
-  Arguments:
-    board: self.size**2 x self.size**2 numpy array
-  Returns:
-    boolean: True if perfect board, False otherwise
-  """
   def perfectBoard(self, board):
+    """
+    Check if the board generated is a perfect Sudoku board!
+    A perfect Sudoku board is one that:
+      for each of the squares (maximum number of non-overlapping self.size x self.size grids on board)
+      AND
+      for each row of self.size**2 numbers
+      AND
+      for each column of self.size**2 numbers,
+      each number from 1 to self.size**2, inclusive, only occurs once
+
+    Arguments:
+      board: self.size**2 x self.size**2 numpy array
+    Returns:
+      boolean: True if perfect board, False otherwise
+    """
     for i in range(self.size):
       i = i * self.size
       for j in range(self.size):
@@ -126,67 +126,67 @@ class Board(object):
             return False
     return True
 
-  """
-  Check if a self.size by self.size square or column is perfect (no numbers repeat)
-  We can easily do this by creating a unique array, and checking if the length is equal to self.size**2
-
-  Arguments:
-    arr: a numpy array, could either be self.size x self.size of self.size**2 x 1
-  Returns:
-    boolean: True if no numbers repeat
-  """
   def isPerfect(self, arr):
+    """
+    Check if a self.size by self.size square or column is perfect (no numbers repeat)
+    We can easily do this by creating a unique array, and checking if the length is equal to self.size**2
+
+    Arguments:
+      arr: a numpy array, could either be self.size x self.size of self.size**2 x 1
+    Returns:
+      boolean: True if no numbers repeat
+    """
     arr = arr.reshape(self.size**2,)
     return len(np.unique(arr)) == self.size**2
 
-  """
-  Check if a number is a duplicate in a numpy array
-
-  Arguments:
-    lst: a numpy array
-    number: integer to check in numpy array
-  Returns:
-    boolean: True if duplicate of number exists in array, False otherwise
-  """
   def isDuplicate(self, lst, number):
+    """
+    Check if a number is a duplicate in a numpy array
+
+    Arguments:
+      lst: a numpy array
+      number: integer to check in numpy array
+    Returns:
+      boolean: True if duplicate of number exists in array, False otherwise
+    """
     return (lst == number).sum() > 1
 
-  """
-  Get the missing numbers in a numpy array
-  lst, in theory, should be a list of consective numbers 1 through N**2 inclusive
-  if lst == [4,4,1,2]:
-    getMissing(lst) == [3]
-  if lst == [1,1,3,1]:
-    getMissing(lst) == [2, 4]
-
-  Arguments:
-    lst: a numpy array of self.size self.size**2
-  Returns:
-    items: the a list of missing items in the list
-  """
   def getMissing(self, lst):
+    """
+    Get the missing numbers in a numpy array
+    lst, in theory, should be a list of consective numbers 1 through N**2 inclusive
+    if lst == [4,4,1,2]:
+      getMissing(lst) == [3]
+    if lst == [1,1,3,1]:
+      getMissing(lst) == [2, 4]
+
+    Arguments:
+      lst: a numpy array of self.size self.size**2
+    Returns:
+      items: the a list of missing items in the list
+    """
     items = []
     for i in range(1,self.size**2 + 1):
       if i not in lst:
         items.append(i)
     return items
 
-  """
-  For a row, switch the item that's at the current index with whichever index the missing number is
-
-  row = [4, 6, 3, 1, 2]
-  currIndex = 2
-  missingNumber = 4
-  new row = [3, 6, 4, 1, 2]
-
-  Arguments:
-    row: numpy array with self.size**2 indices
-    currIndex: integer- index currently at
-    missingNumber: integer- the number that will be switched and put at currIndex
-  Returns:
-    row: modified row with same dimensions as original row
-  """
   def switch(self, row, currIndex, missingNumber):
+    """
+    For a row, switch the item that's at the current index with whichever index the missing number is
+
+    row = [4, 6, 3, 1, 2]
+    currIndex = 2
+    missingNumber = 4
+    new row = [3, 6, 4, 1, 2]
+
+    Arguments:
+      row: numpy array with self.size**2 indices
+      currIndex: integer- index currently at
+      missingNumber: integer- the number that will be switched and put at currIndex
+    Returns:
+      row: modified row with same dimensions as original row
+    """
     missingIndex = np.where(row == missingNumber)
     missingIndex = missingIndex[0][0]
     # if missingIndex / self.size * self.size == currIndex / self.size * self.size:
@@ -195,46 +195,46 @@ class Board(object):
     row[currIndex] = missingNumber
     return row
 
-  """
-  For a particular box on the board, board[row, col], get the square,
-  row, and column this box is in.
-
-  Arguments:
-    board: self.size**2 by self.size**2 numpy array
-    row: index of row
-    col: index of column
-  Returns:
-    square, row, column
-    square: self.size x self.size numpy array
-    row: a self.size**2 array
-    column: a self.size**2 array
-  """
   def getSquareRowCol(self, board, row, col):
+    """
+    For a particular box on the board, board[row, col], get the square,
+    row, and column this box is in.
+
+    Arguments:
+      board: self.size**2 by self.size**2 numpy array
+      row: index of row
+      col: index of column
+    Returns:
+      square, row, column
+      square: self.size x self.size numpy array
+      row: a self.size**2 array
+      column: a self.size**2 array
+    """
     i = row / self.size * self.size
     j = col / self.size * self.size
     return board[i:i+self.size, j:j+self.size], board[row], board[:, col]
 
-  """
-  Get the first number in a list that's missing in another list
-  l1 = [1,3,2,1]
-  l2 = [1,4]
-  getMissingInCol(l1, l2) == 4
-  Arguments:
-    col: numpy array with self.size**2 entries
-    missing: list with up to self.size**2 entries
-  Returns:
-    None if no items in missing are in col,
-    else, the first item that's missing
-  """
   def inRowNotInCol(self, square, missing):
+    """
+    Get the first number in a list that's missing in another list
+    l1 = [1,3,2,1]
+    l2 = [1,4]
+    getMissingInCol(l1, l2) == 4
+    Arguments:
+      col: numpy array with self.size**2 entries
+      missing: list with up to self.size**2 entries
+    Returns:
+      None if no items in missing are in col,
+      else, the first item that's missing
+    """
     for item in missing:
       if item in square:
         return item
 
-  """
-  Test how many perfect boards we get
-  """
   def test():
+    """
+    Test how many perfect boards we get
+    """
     perfect = 0.
     for i in range(self.maxiterations):
       b = generate()
@@ -242,19 +242,45 @@ class Board(object):
         perfect += 1
     print perfect / self.maxiterations
 
-"""
-User can input board self.size: 16 boxes, or 81 boxes
-"""
 if __name__ == "__main__":
+  """
+  User can input board self.size: 16 boxes, or 81 boxes
+  """
   try:
     assert sys.argv[1] > 1
     size = int(sys.argv[1])
   except Exception as e:
     size = 3
 
-  maxiterations = 100
-  board = Board(size, maxiterations).board
-  print board
+  board = Board(size, 100).board
+  
+  # to draw board:
+  
+  #  x x x | x x x | x x x
+  #  x x x | x x x | x x x
+  #  x x x | x x x | x x x
+  # -------+-------+-------
+  #  x x x | x x x | x x x
+  #  x x x | x x x | x x x
+  #  x x x | x x x | x x x
+  # -------+-------+-------
+  #  x x x | x x x | x x x
+  #  x x x | x x x | x x x
+  #  x x x | x x x | x x x
+
+  s = ""
+  for i in range(size ** 2):
+    if i % size == 0 and not (i == 0 or i == size ** 2 - 1):
+      s += "-------+-------+-------\n"
+    for j in range(size ** 2):
+      num = str(board[i, j])[0]
+      if j % size == 0 and not (j == 0 or j == size ** 2 -1):
+        s += " | " + num
+      elif j == size ** 2 - 1:
+        s += " " + num + " \n"
+      else:
+        s += " " + num
+  print s
 
   # # test how many perfect boards we get...
   # test()
