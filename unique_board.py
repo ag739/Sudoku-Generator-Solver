@@ -22,14 +22,25 @@ class Board(object):
       for j in range(9):
         indices.append((i, j))
     # randomly select an index to remove
-    while len(indices) > 0:
+    while len(indices) > 30:
       index = indices.pop(np.random.randint(len(indices)))
       number_at_index = puzzle[index]
       puzzle[index] = 0
       # run solver on this puzzle, see if it's unique. if not, add this number back in
-      if solver.backtrack(puzzle) is False:
-        puzzle[index] = number_at_index
+      # if not solver.solve(puzzle):
+      #   puzzle[index] = number_at_index
     return puzzle
+
+def getAllX(grid, x):
+  """
+  Returns list of indices of occurrences of 'x' in grid
+  """
+  lst = []
+  for i in range(9):
+    for j in range(9):
+      if grid[i, j] == x:
+        lst.append((i, j))
+  return lst
 
 """
 User can input board self.size: 16 boxes, or 81 boxes
@@ -43,5 +54,4 @@ if __name__ == "__main__":
 
   maxiterations = 100
   board = Board(size, maxiterations)
-  print board.solved == board.puzzle
   print board.puzzle

@@ -250,7 +250,7 @@ if __name__ == "__main__":
     assert sys.argv[1] > 1
     size = int(sys.argv[1])
   except Exception as e:
-    size = 2
+    size = 3
 
   maxiterations = 100
   board = Board(size, maxiterations).board
