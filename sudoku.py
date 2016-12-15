@@ -140,7 +140,7 @@ def getAllX(grid, x):
   return lst
 
 if __name__ == "__main__":
-  board = Board(3, 100)
+  board = Board(3, 100, 35)
   root = Tkinter.Tk()
   SudokuUI(root, board)
   root.geometry(str(WIDTH) + 'x' + str(HEIGHT + SIDE))

@@ -116,14 +116,20 @@ class Board(object):
     Returns:
       boolean: True if perfect board, False otherwise
     """
+    for i in range(self.size**2):
+      row = board[i]
+      col = board[:, i]
+      for x in range(self.size**2):
+        if not (x+1 in row and x+1 in col):
+          return False
+
     for i in range(self.size):
-      i = i * self.size
       for j in range(self.size):
-        j = j * self.size
-        square, row, col = self.getSquareRowCol(board, i, j)
+        square, _, _ = self.getSquareRowCol(board, i * self.size, j * self.size)
         for x in range(self.size**2):
-          if not (x+1 in square and x+1 in row and x+1 in col):
+          if not (x+1) in square:
             return False
+
     return True
 
   def isPerfect(self, arr):
@@ -253,6 +259,7 @@ if __name__ == "__main__":
     size = 3
 
   board = Board(size, 100).board
+  print board
   
   # to draw board:
   
