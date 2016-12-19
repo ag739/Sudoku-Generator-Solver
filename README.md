@@ -1,7 +1,9 @@
 # Sudoku Puzzle Generator and Solver
+
 _For CS 4701 - Practicum in Artificial Intelligence_
 
 ## About the Project
+
 This project's aim is to show how certain concepts in AI help create Sudoku puzzles. There are three parts to this project:
 
 1. Generate a full, complete board
@@ -17,6 +19,7 @@ For the third part, a GUI assists in helping solve the puzzle by not allowing an
 ## Running the Project
 
 ### Generate a full, complete board
+
 Running `python solved_board.py` will print out the numpy array of the board as well as a formatted version of the completed board.
 
 ```
@@ -43,10 +46,13 @@ Running `python solved_board.py` will print out the numpy array of the board as 
 ```
 
 #### Optional arguments
+
 _n_: number of units in each _n_ x _n_ square
+
 Default is three, so `python solved_board.py` is the same thing as `python solved_board.py 3`
 
 ### Generate a unique puzzle
+
 Running `python unique_board.py` will print out a formatted version of the puzzle. The print statements in the console denote how many more indices the generator will try to remove while still maintaining a unique puzzle.
 
 ```
@@ -64,14 +70,21 @@ Running `python unique_board.py` will print out a formatted version of the puzzl
 ```
 
 #### Optional arguments
+
 _n_: number of units in each _n_ x _n_ square
+
 Default is three, so `python unique_board.py` is the same thing as `python unique_board.py 3`
+
 _threshold_: number of indices the generator will try to remove from the complete board
+
 Default is 35, so `python unique_board.py` is the same thing as `python unique_board.py 3 35`
 
 ### Solve a Sudoku Puzzle using the GUI
+
 Run `python sudoku.py` to use the GUI.
+
 An incorrect guess is not allowed by the GUI, and the console will warn you when you make an incorrect guess.
 
 #### Optional arguments
+
 There are no option arguments. The GUI only supports a 9x9 board at the moment.
