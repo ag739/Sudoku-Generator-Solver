@@ -3,7 +3,21 @@ _For CS 4701 - Practicum in Artificial Intelligence_
 
 Project looking at algorithms to generate full Sudoku boards and a Sudoku puzzle solver. The full Sudoku board generation must first generate a full, complete board, and then must determine which boxes to remove while still maintaining a unique puzzle.
 
-## Generate a full, complete board
+## About the Project
+This project's aim is to show how certain concepts in AI help create perfect Sudoku boards. There are three parts to this project:
+1. Generate a full, complete board
+2. Remove clues until a certain threshold is reached while maintaining a unique puzzle
+3. Play! Solve the puzzle on your own using the GUI
+
+For the first part, a random board was generated, and using local search (simulated-annealing), local modifications were made until a perfect board was achieved (or time ran out).
+
+For the second part, a threshold is determined of how many possible clues will be removed from the board. With each clue removed, a backtracking algorithm is run to check if the puzzle still has a unique solution. If it doesn't, the clue is added back in.
+
+For the third part, a GUI assists in helping solve the puzzle by not allowing any incorrect guesses (a warning will appear in the console). Click on a unit. An empty unit clicked on will have a dark blue border, and an already-filled-in unit clicked on will highlight all units with the active unit's number on the board. Enter in a guess via keyboard. The "give up" button on the bottom of the GUI will solve the puzzle for you.
+
+## Running the Project
+
+### Generate a full, complete board
 Running `python solved_board.py` will print out the numpy array of the board as well as a formatted version of the completed board.
 
 ```
@@ -29,11 +43,11 @@ Running `python solved_board.py` will print out the numpy array of the board as 
  8 7 1 | 5 2 6 | 3 4 9
 ```
 
-### Optional arguments
+#### Optional arguments
 _n_: number of units in each _n_ x _n_ square
 Default is three, so `python solved_board.py` is the same thing as `python solved_board.py 3`
 
-## Generate a unique puzzle
+### Generate a unique puzzle
 Running `python unique_board.py` will print out a formatted version of the puzzle. The print statements in the console denote how many more indices the generator will try to remove while still maintaining a unique puzzle.
 
 ```
@@ -50,15 +64,15 @@ Running `python unique_board.py` will print out a formatted version of the puzzl
  5 7   |       | 3   8
 ```
 
-### Optional arguments
+#### Optional arguments
 _n_: number of units in each _n_ x _n_ square
 Default is three, so `python unique_board.py` is the same thing as `python unique_board.py 3`
 _threshold_: number of indices the generator will try to remove from the complete board
 Default is 35, so `python unique_board.py` is the same thing as `python unique_board.py 3 35`
 
-## Solve a Sudoku Puzzle using the GUI
+### Solve a Sudoku Puzzle using the GUI
 Run `python sudoku.py` to use the GUI.
 An incorrect guess is not allowed by the GUI, and the console will warn you when you make an incorrect guess.
 
-### Optional arguments
+#### Optional arguments
 There are no option arguments. The GUI only supports a 9x9 board at the moment.
