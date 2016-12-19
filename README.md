@@ -1,10 +1,9 @@
 # Sudoku Puzzle Generator and Solver
 _For CS 4701 - Practicum in Artificial Intelligence_
 
-Project looking at algorithms to generate full Sudoku boards and a Sudoku puzzle solver. The full Sudoku board generation must first generate a full, complete board, and then must determine which boxes to remove while still maintaining a unique puzzle.
-
 ## About the Project
-This project's aim is to show how certain concepts in AI help create perfect Sudoku boards. There are three parts to this project:
+This project's aim is to show how certain concepts in AI help create Sudoku puzzles. There are three parts to this project:
+
 1. Generate a full, complete board
 2. Remove clues until a certain threshold is reached while maintaining a unique puzzle
 3. Play! Solve the puzzle on your own using the GUI
